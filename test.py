@@ -62,6 +62,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(dict(response), {'2013-12-12': -227.35, '2013-12-13': -1229.5800000000008, '2013-12-15': -5.39})
         os.remove("balances.txt")
 
+class IOTests(unittest.TestCase):
     #check if test_import_file_Dict creates a dict correctly
     def test_import_file_Dict(self):
         #print("test_import_file_Dict")
