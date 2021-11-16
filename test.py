@@ -1,6 +1,6 @@
 try:
     from main import app, get_api_data, import_balances_file, calculateBalance
-    import os.path
+    import os
     import unittest
 except Exception as e:
     print(f"Error: check imported modules: {e}")
@@ -33,13 +33,15 @@ class ApiTests(unittest.TestCase):
         response = get_api_data(99999999)
         self.assertEqual(response, "404 Error")
     
-    #check if calculateBalance outputs a dict
+    #check if calculateBalance outputs or creates a dict, removes balances.txt afterwards
     def test_check_balances_dict(self):
         response = calculateBalance()
         self.assertIsInstance(response, dict)
+        os.remove("balances.txt")
 
 class IoTests(unittest.TestCase):
 
+    #check if test_import_file_Dict creates a dict correctly
     def test_import_file_Dict(self):
         if(os.path.isfile("balances.txt")):
             dir = import_balances_file("balances.txt")

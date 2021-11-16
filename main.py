@@ -2,9 +2,8 @@ from flask import Flask, jsonify
 import requests
 import json
 import os.path
-"""
+from collections import OrderedDict
 
-"""
 app = Flask(__name__)
 
 # Function:  get_api_data(pageNum)
@@ -43,8 +42,9 @@ def calculateBalance():
     #if ran before, i load the results of the last run as a form of caching mechanism. To create a new result, simply move/delete balances.txt from the root.
     if(os.path.isfile("balances.txt")):
         balances = import_balances_file("balances.txt")
-        app.logger.info(balances)
-        return balances
+        ordered = OrderedDict(sorted(balances.items(), key=lambda t:t[0]))
+        app.logger.info(ordered)
+        return ordered
     else:
         balances = {}
         page = 1
@@ -63,10 +63,11 @@ def calculateBalance():
         
 
         #Dump balances dict as balances.txt
+        ordered = OrderedDict(sorted(balances.items(), key=lambda t:t[0]))
         with open('balances.txt','w') as file:
-            file.write(json.dumps(balances))
-        app.logger.info(balances)
-        return balances
+            file.write(json.dumps(ordered))
+        app.logger.info(ordered)
+        return ordered
 
 @app.route('/')
 def index():
