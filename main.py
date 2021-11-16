@@ -2,14 +2,14 @@ from flask import Flask, jsonify
 import requests
 import json
 import os.path
-from collections import OrderedDict
+from collections import OrderedDict 
 
 app = Flask(__name__)
 
 # Function:  get_api_data(pageNum)
 # Use:       loads data from given api
 # Input:     PageNumber
-# Output:    Response Data as Dictionary or "404 Error" if no value
+# Output:    Response Data as Dictionary or 404 if no value
 def get_api_data(pageNum):
     app.logger.info(f"Running get_api_data. Page = {pageNum}")
     r = requests.get(f'https://resttest.bench.co/transactions/{pageNum}.json')
@@ -33,7 +33,8 @@ def import_balances_file(fileName):
 
 # Function:  calculateBalance()
 # Use:       Creates a dict object of balances from the Bench API, exports a copy of the balance variable as a file. 
-#            If the Balances.txt exists already, it will pull from the file instead.
+#            If the Balances.txt exists already, it will pull from the file instead. In the future, can set a time comparison to fetch new data in case 
+#            new data is available.
 # Input:     None
 # Output:    balances as a dict object 
 # Depend.:   import_balances_file(), get_api_data()
