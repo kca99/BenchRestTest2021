@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 import requests
 import json
 import os.path
@@ -21,7 +21,7 @@ def get_api_data(pageNum):
         return r.status_code
     except requests.exceptions.ConnectionError:
         return r.status_code
-    
+    #for other non-200 http responses, we can add the status codes here as exceptions
 
 # Function:  import_balances_file(fileName)
 # Use:       Imports dictionary from a file created from last run
@@ -52,6 +52,7 @@ def calculateBalance():
         app.logger.info(ordered)
         return ordered
     else:
+        #build dictionary of dates: sum. Dictionary > List in terms of time complexity on average (search + inserts)
         balances = {}
         page = 1
         exitVal = False 
