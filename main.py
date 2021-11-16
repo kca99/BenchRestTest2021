@@ -18,7 +18,7 @@ def get_api_data(pageNum):
         r.raise_for_status()
     except requests.exceptions.HTTPError as e:
         # Whoops it wasn't a 200
-        return "404 Error"
+        return 404
     return json.loads(r.content)
 
 # Function:  import_balances_file(fileName)
@@ -51,7 +51,7 @@ def calculateBalance():
         exitVal = False 
         while (exitVal == False): #Using exit condition instead of another api call
             data = get_api_data(page)
-            if(data != "404 Error"):
+            if(data != 404):
                 for k in data["transactions"]: #load dictionary based on whether the key already exists
                     if k["Date"] in balances:
                         balances[k["Date"]] = float(balances[k["Date"]]) + float(k["Amount"])

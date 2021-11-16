@@ -31,7 +31,7 @@ class ApiTests(unittest.TestCase):
     #check if the exception is working for the get_api_data function
     def test_api_except(self):
         response = get_api_data(99999999)
-        self.assertEqual(response, "404 Error")
+        self.assertEqual(response, 404)
     
     #check if calculateBalance outputs or creates a dict, removes balances.txt afterwards
     def test_check_balances_dict(self):
