@@ -3,7 +3,7 @@ import requests
 import json
 import os.path
 """
-python -m pip install requests
+
 """
 app = Flask(__name__)
 
@@ -43,6 +43,7 @@ def calculateBalance():
     #if ran before, i load the results of the last run as a form of caching mechanism. To create a new result, simply move/delete balances.txt from the root.
     if(os.path.isfile("balances.txt")):
         balances = import_balances_file("balances.txt")
+        app.logger.info(balances)
         return balances
     else:
         balances = {}
@@ -59,11 +60,12 @@ def calculateBalance():
                 page = page+1
             else:
                 exitVal = True
-        #app.logger.info(balances)
+        
 
         #Dump balances dict as balances.txt
         with open('balances.txt','w') as file:
             file.write(json.dumps(balances))
+        app.logger.info(balances)
         return balances
 
 @app.route('/')
