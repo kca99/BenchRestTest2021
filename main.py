@@ -9,17 +9,19 @@ app = Flask(__name__)
 # Function:  get_api_data(pageNum)
 # Use:       loads data from given api
 # Input:     PageNumber
-# Output:    Response Data as Dictionary or 404 if no value
+# Output:    Response Data as Dictionary or non-200 http responses
 def get_api_data(pageNum):
     app.logger.info(f"Running get_api_data. Page = {pageNum}")
     r = requests.get(f'https://resttest.bench.co/transactions/{pageNum}.json')
     #app.logger.info(r.status_code)   
     try:
         r.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        # Whoops it wasn't a 200
-        return 404
-    return json.loads(r.content)
+        return json.loads(r.content)
+    except requests.exceptions.HTTPError:
+        return r.status_code
+    except requests.exceptions.ConnectionError:
+        return r.status_code
+    
 
 # Function:  import_balances_file(fileName)
 # Use:       Imports dictionary from a file created from last run
@@ -27,9 +29,12 @@ def get_api_data(pageNum):
 # Output:    Dictionary variable as dictVar      
 def import_balances_file(fileName):
     app.logger.info("Running import_balances_file")
-    with open(fileName, 'r') as file:
-        dictVar = eval(file.read())
-    return dictVar
+    try:
+        with open(fileName, 'r') as file:
+            dictVar = eval(file.read())
+        return dictVar
+    except FileNotFoundError:
+        return FileNotFoundError
 
 # Function:  calculateBalance()
 # Use:       Creates a dict object of balances from the Bench API, exports a copy of the balance variable as a file. 
@@ -52,7 +57,7 @@ def calculateBalance():
         exitVal = False 
         while (exitVal == False): #Using exit condition instead of another api call
             data = get_api_data(page)
-            if(data != 404):
+            if(data != 404): #add to this if there are possible more non-200 http responses
                 for k in data["transactions"]: #load dictionary based on whether the key already exists
                     if k["Date"] in balances:
                         balances[k["Date"]] = float(balances[k["Date"]]) + float(k["Amount"])
